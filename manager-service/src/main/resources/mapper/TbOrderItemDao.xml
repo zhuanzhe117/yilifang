@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ghy.e3mall.dao.TbOrderItemDao">
+
+    <resultMap type="com.ghy.e3mall.entity.TbOrderItem" id="TbOrderItemMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="itemId" column="item_id" jdbcType="VARCHAR"/>
+        <result property="num" column="num" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="VARCHAR"/>
+        <result property="totalFee" column="total_fee" jdbcType="VARCHAR"/>
+        <result property="picPath" column="pic_path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbOrderItemMap" parameterType="integer">
+        select id,
+               item_id,
+               num,
+               title,
+               price,
+               total_fee,
+               pic_path
+        from e3mall.tb_order_item
+        where = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbOrderItemMap">
+        select id,
+               item_id,
+               num,
+               title,
+               price,
+               total_fee,
+               pic_path
+        from e3mall.tb_order_item
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbOrderItemMap">
+        select
+        id, item_id, num, title, price, total_fee, pic_path
+        from e3mall.tb_order_item
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="itemId != null and itemId != ''">
+                and item_id = #{itemId}
+            </if>
+            <if test="num != null and num != ''">
+                and num = #{num}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="price != null and price != ''">
+                and price = #{price}
+            </if>
+            <if test="totalFee != null and totalFee != ''">
+                and total_fee = #{totalFee}
+            </if>
+            <if test="picPath != null and picPath != ''">
+                and pic_path = #{picPath}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into e3mall.tb_order_item(id, item_id, num, title, price, total_fee, pic_path)
+        values (#{id}, #{itemId}, #{num}, #{title}, #{price}, #{totalFee}, #{picPath})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
+        insert into e3mall.tb_order_item(id, item_id, num, title, price, total_fee, pic_path)
+        values
+        <foreach collection="entities" item="com.ghy.e3mall.entity" separator=",">
+            (#{com.ghy.e3mall.entity.id}, #{com.ghy.e3mall.entity.itemId}, #{com.ghy.e3mall.entity.num}, #{com.ghy.e3mall.entity.title}, #{com.ghy.e3mall.entity.price}, #{com.ghy.e3mall.entity.totalFee},
+            #{com.ghy.e3mall.entity.picPath})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
+        insert into e3mall.tb_order_item(id, item_id, num, title, price, total_fee, pic_path)
+        values
+        <foreach collection="entities" item="com.ghy.e3mall.entity" separator=",">
+            (#{com.ghy.e3mall.entity.id}, #{com.ghy.e3mall.entity.itemId}, #{com.ghy.e3mall.entity.num}, #{com.ghy.e3mall.entity.title}, #{com.ghy.e3mall.entity.price}, #{com.ghy.e3mall.entity.totalFee},
+            #{com.ghy.e3mall.entity.picPath})
+        </foreach>
+        on duplicate key update
+        id = values(id) , item_id = values(item_id) , num = values(num) , title = values(title) , price = values(price)
+        , total_fee = values(total_fee) , pic_path = values(pic_path)
+    </insert>
+
+</mapper>
